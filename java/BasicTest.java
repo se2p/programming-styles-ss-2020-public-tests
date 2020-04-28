@@ -34,7 +34,7 @@ public class BasicTest {
         // Setup
         String[] aValidSequenceInput = new String[] { "1", "2", "3" };
         // Execution
-        Map<String, Object> result = PSTestUtils.executePreyAndHuntersWithArgs(aValidSequenceInput);
+        Map<String, Object> result = PSTestUtils.executePreysAndHuntersWithArgs(aValidSequenceInput);
 
         int exitCode = (Integer) result.get("exitCode");
         String stdOut = (String) result.get("stdOut");
@@ -44,11 +44,11 @@ public class BasicTest {
 
         // Did the program exit normally?
         Assert.assertEquals(
-                PSTestUtils.PREY_AND_HUNTERS_CLASS_NAME + " did not exit normally. Error message: " + stdError + "\n", 0,
+                PSTestUtils.PREYS_AND_HUNTERS_CLASS_NAME + " did not exit normally. Error message: " + stdError + "\n", 0,
                 exitCode);
 
         // Did program produce any output at all?
-        MatcherAssert.assertThat(PSTestUtils.PREY_AND_HUNTERS_CLASS_NAME + " did not produced any output!", stdOut,
+        MatcherAssert.assertThat(PSTestUtils.PREYS_AND_HUNTERS_CLASS_NAME + " did not produced any output!", stdOut,
                 Matchers.not(blankOrNullString()));
     }
 
