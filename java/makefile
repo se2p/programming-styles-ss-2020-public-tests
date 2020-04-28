@@ -26,7 +26,7 @@ compile: $(TEST_CLASSES:.java=.class) $(CLASSES:.java=.class)
 
 # # This target assumes that the public test project was checkout as submodule under public-tests
 test: $(TEST_CLASSES:.java=.class) $(CLASSES:.java=.class)
-	$(JAVA) -cp $(TESTING_CLASSPATH) -Dpah.home=$(PRAY_AND_HUNTERS_HOME) org.junit.runner.PSTestRunner $(TESTS)
+	$(JAVA) -cp $(TESTING_CLASSPATH) -Dpah.home=$(PREYS_AND_HUNTERS_HOME) org.junit.runner.PSTestRunner $(TESTS)
 
 clean:
 	$(shell find . -name '*.class' -exec rm {} \;)
