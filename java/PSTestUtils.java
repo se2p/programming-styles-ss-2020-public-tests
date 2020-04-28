@@ -9,10 +9,10 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.util.AbstractMap;
-import java.util.Arrays;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
-import java.util.stream.Stream;
 
 import org.junit.Assume;
 
@@ -34,12 +34,13 @@ public class PSTestUtils {
      * 
      */
     public static void validateTheExecutionEnvironment() {
-        Assume.assumeNotNull(getPreyAndHunter());
-        Assume.assumeNotNull(getJava());
+        Assume.assumeNotNull("PREY_AND_HUNTERS_HOME is not set", getPreyAndHunter());
+        Assume.assumeNotNull("Java is not set", getJava());
         // See https://www.baeldung.com/hamcrest-file-matchers
-        Assume.assumeThat(new File(getPreyAndHunter()), anExistingDirectory());
-        Assume.assumeThat(new File(getPreyAndHunter(), PREY_AND_HUNTERS_CLASS_NAME + ".class"), anExistingFile());
-        // TODO Check if the java version returned by getJava() is indeed 11
+        Assume.assumeThat("Cannot find PREY_AND_HUNTERS_HOME", new File(getPreyAndHunter()), anExistingDirectory());
+        Assume.assumeThat("Cannot find " + PREY_AND_HUNTERS_CLASS_NAME + ".class",
+                new File(getPreyAndHunter(), PREY_AND_HUNTERS_CLASS_NAME + ".class"), anExistingFile());
+        // TODO Check if the java version returned by getJava() is indeed JAVA 11
     }
 
     public static String getPreyAndHunter() {
@@ -64,16 +65,18 @@ public class PSTestUtils {
      * @param args
      * @throws IOException
      */
-    public static Map.Entry<Integer, String> executePreyAndHuntersWithArgs(String... args) throws Exception {
-        String[] _args = Stream.concat(Arrays.stream(new String[] {
-                // Java executable and Program Name/Class Name
-                getJava(), PREY_AND_HUNTERS_CLASS_NAME }),
-                // Input arguments
-                Arrays.stream(args)).toArray(String[]::new);
+    public static Map<String, Object> executePreyAndHuntersWithArgs(String... args) throws Exception {
+        List<String> _args = new ArrayList<String>();
+        _args.add(getJava());
+        // In order to correctly invoke PreyAndHunters we need to set its class path
+        _args.add("-cp");
+        _args.add(getPreyAndHunter());
+        _args.add(PREY_AND_HUNTERS_CLASS_NAME);
+        for (String arg : args) {
+            _args.add(arg);
+        }
 
         ProcessBuilder pb = new ProcessBuilder(_args);
-
-        pb.directory(new File(getPreyAndHunter()));
 
         Process process = pb.start();
 
@@ -85,10 +88,24 @@ public class PSTestUtils {
             builder.append(System.getProperty("line.separator"));
         }
 
-        String result = builder.toString();
+        BufferedReader errorReader = new BufferedReader(new InputStreamReader(process.getErrorStream()));
+        StringBuilder errorBuilder = new StringBuilder();
+        String errorLine = null;
+        while ((errorLine = errorReader.readLine()) != null) {
+            errorBuilder.append(errorLine);
+            errorBuilder.append(System.getProperty("line.separator"));
+        }
+
+        String stdOut = builder.toString();
+        String stdError = errorBuilder.toString();
         int exitCode = process.waitFor();
 
-        return new AbstractMap.SimpleEntry<Integer, String>(exitCode, result);
+        Map<String, Object> result = new HashMap<String, Object>();
+        result.put("exitCode", exitCode);
+        result.put("stdOut", stdOut);
+        result.put("stdError", stdError);
+
+        return result;
     }
 
 }
