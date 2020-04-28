@@ -2,8 +2,9 @@
 const assert = require('assert');
 
 // Find your module using the --pah_home variable and the default name 'preys-and-hunters'
-const pahHome = process.env.npm_config_pah_home + 'preys-and-hunters'
-const pah = require(pahHome)
+
+const pahHome = process.env.npm_config_pah_home.endsWith('/') ? process.env.npm_config_pah_home  : process.env.npm_config_pah_home + '/'
+const pah = require(pahHome + 'preys-and-hunters')
 
 describe('Basic Test', function() {
     
