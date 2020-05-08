@@ -99,7 +99,7 @@ public class BasicTest {
     @Test(timeout = 3000)
     public void testGUIHasTheCorrectNumberOfLinesForTwoInputs() throws Exception {
         // Setup
-        String[] aValidSequenceInput = new String[] { "1" };
+        String[] aValidSequenceInput = new String[] { "1", "1" };
 
         /*
          * This test should result in the following: 6 lines for the initial board + 6
