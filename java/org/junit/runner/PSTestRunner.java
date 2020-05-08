@@ -1,8 +1,13 @@
 package org.junit.runner;
 
 import java.io.PrintStream;
+import java.text.DateFormat;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.Date;
 
 import org.junit.internal.TextListener;
+import org.junit.runner.notification.Failure;
 
 /**
  * A simple wrapper around JUnitCore to easily configure it.
@@ -20,6 +25,8 @@ import org.junit.internal.TextListener;
  */
 public class PSTestRunner {
 
+    private final static DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss");
+
     static final class SuppressingOutputTextListener extends TextListener {
 
         public SuppressingOutputTextListener(PrintStream writer) {
@@ -34,11 +41,19 @@ public class PSTestRunner {
 
         @Override
         public void testStarted(Description description) {
-            System.out.println("Running test: " + description.getMethodName());
+            System.out.println("\t - Running test: " + description.getMethodName());
+        }
+
+        @Override
+        public void testFailure(Failure failure) {
+            // Make sure that the hideous E is not printed anynmore
         }
     }
 
     public static void main(String[] args) {
+        System.out.println("");
+        System.out.println("Starting test executions: " + dtf.format(LocalDateTime.now()));
+        System.out.println("");
         /*
          * This method re-implements JunitCore.main() but replace the hideous default
          * TextListener with out that logs which test starts. To make it possible
@@ -51,6 +66,7 @@ public class PSTestRunner {
         junit.addListener(new SuppressingOutputTextListener(System.out));
 
         Result result = junit.run(jUnitCommandLineParseResult.createRequest(JUnitCore.defaultComputer()));
+        
         System.exit(result.wasSuccessful() ? 0 : 1);
 
     }
