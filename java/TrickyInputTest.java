@@ -38,7 +38,7 @@ public class TrickyInputTest {
         PSTestUtils.validateTheExecutionEnvironment();
     }
     
-    private void assertFinalBoardAndMessageMatches(String[] expectedBoard, String[] expectedMessage, String stdOut) {
+    private void callMatchersForFinalBoardAndMessage(String[] expectedBoard, String[] expectedMessage, String stdOut) {
         String[] actualBoard = new String[expectedBoard.length];
         String[] actualMessage = new String[expectedMessage.length];
         
@@ -50,7 +50,8 @@ public class TrickyInputTest {
         Assert.assertTrue("The program did not produce enough output lines!",
                 numberOfOutputLines >= expectedBoard.length + expectedMessage.length);
 
-        // Take the a number of lines according to the expected message from the end of stdOut and store them as the actual message
+        // Take the a number of lines according to the expected message from the end of stdOut and store them as the 
+        // actual message
         for (int i = 0; i < expectedMessage.length; ++i) {
             // Count the total amount of rows backwards and then iterate forwards using i
             int outputAsLinesIndex = numberOfOutputLines - expectedMessage.length + i;
@@ -65,12 +66,10 @@ public class TrickyInputTest {
         }
         
         // Did the program terminate with the expected message?
-        Assert.assertArrayEquals("Expected message did not match the message provided by the programm",
-                expectedMessage, actualMessage);
+        MatcherAssert.assertThat(actualMessage, BoardMatcher.matchesBoard(expectedMessage));
         
         // Did the program terminate with the expected final board state?
-        Assert.assertArrayEquals("Expected board state did not match the board provided by the programm",
-                expectedBoard, actualBoard);
+        MatcherAssert.assertThat(actualBoard, BoardMatcher.matchesBoard(expectedBoard));
     }
     
     
@@ -96,10 +95,12 @@ public class TrickyInputTest {
         String horizontalLine = "\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500"
                 + "\u2500\u2500\u2500\u2500";
         String[] expectedMessage = new String [] {
+                boatFieldTop + tileTop + tileTop + oceanFieldTop,
                 "\u250c" + horizontalLine + "\u2510",
                 "\u2502 Missing inputs. \u2502",
                 "\u2502 The games ends! \u2502",
-                "\u2514" + horizontalLine + "\u2518"};
+                "\u2514" + horizontalLine + "\u2518",
+                boatFieldBottom + tileBottom + tileBottom + oceanFieldBottom};
         
         
         String[] expectedBoard = new String [] {
@@ -121,7 +122,7 @@ public class TrickyInputTest {
         MatcherAssert.assertThat(PSTestUtils.PREYS_AND_HUNTERS_CLASS_NAME + " did not produced any output!", stdOut,
                 Matchers.not(blankOrNullString()));
         
-        assertFinalBoardAndMessageMatches(expectedBoard, expectedMessage, stdOut);
+        callMatchersForFinalBoardAndMessage(expectedBoard, expectedMessage, stdOut);
     }
 
     /**
@@ -176,7 +177,10 @@ public class TrickyInputTest {
         MatcherAssert.assertThat(PSTestUtils.PREYS_AND_HUNTERS_CLASS_NAME + " did not produced any output!", stdOut,
                 Matchers.not(blankOrNullString()));
         
-        assertFinalBoardAndMessageMatches(expectedBoard, losingMessage, stdOut);
+        MatcherAssert.assertThat(expectedBoard, SaveFishMatcher.saveFish(2));
+        MatcherAssert.assertThat(expectedBoard, CaughtFishMatcher.caughtFish(4));
+        
+        callMatchersForFinalBoardAndMessage(expectedBoard, losingMessage, stdOut);
     }
     
     /**
@@ -223,7 +227,7 @@ public class TrickyInputTest {
         MatcherAssert.assertThat(PSTestUtils.PREYS_AND_HUNTERS_CLASS_NAME + " did not produced any output!", stdOut,
                 Matchers.not(blankOrNullString()));
         
-        assertFinalBoardAndMessageMatches(expectedBoard, winningMessage, stdOut);
+        callMatchersForFinalBoardAndMessage(expectedBoard, winningMessage, stdOut);
     }
 
     /**
@@ -276,7 +280,7 @@ public class TrickyInputTest {
         MatcherAssert.assertThat(PSTestUtils.PREYS_AND_HUNTERS_CLASS_NAME + " did not produced any output!", stdOut,
                 Matchers.not(blankOrNullString()));
         
-        assertFinalBoardAndMessageMatches(expectedBoard, drawMessage, stdOut);
+        callMatchersForFinalBoardAndMessage(expectedBoard, drawMessage, stdOut);
         
     }
 
