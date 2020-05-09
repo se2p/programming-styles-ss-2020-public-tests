@@ -51,7 +51,6 @@ public class FileTest {
         // Checking the folder
         final File testDataFolder = new File(testDataLocation);
         if (!testDataFolder.isDirectory() || !testDataFolder.exists()) {
-            System.out.println();
             throw new IllegalArgumentException(
                     "Test data folder (" + testDataFolder.getAbsolutePath() + testDataLocation + ") is not a folder.");
         }
