@@ -134,7 +134,7 @@ public class BasicTest {
          * lines for the next 24 inputs NOTE: there are no additional 6 lines for the
          * final message !
          */
-        int expectedLines = 6 + 24 * 6;
+        int expectedLines = 6 + 18 * 6;
 
         // Execution
         Map<String, Object> result = PSTestUtils.executePreysAndHuntersWithArgs(aValidSequenceInput);
