@@ -21,7 +21,8 @@ import org.junit.runners.Parameterized;
 import org.junit.runners.Parameterized.Parameters;
 
 /**
- * TODO
+ * Implements unit tests against test files (*_input.txt and corresponding *_output.txt)
+ * in the directory specified by the -Dtest.data variable.
  * 
  * @author Fabian Schliski
  *
