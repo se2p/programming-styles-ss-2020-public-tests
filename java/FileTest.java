@@ -93,7 +93,7 @@ public class FileTest {
         }catch (IOException e) {
             e.printStackTrace();
         }
-        return String.join("\n", lines); // TODO which separator?
+        return String.join("\n", lines);
     }
 
     @BeforeClass
