@@ -6,8 +6,9 @@
 # be located under ../java/
 #
 PREYS_AND_HUNTERS_HOME="../java"
+TEST_DATA_DIR="../test_data"
 
 if [ $# -lt 1 ]; then echo "Missing test name"; exit 1; fi
 
 # To run one test you must invoke JUnitCore from the command line and pass the Class name of the TestCase, e.g., BasicTests
-java -cp .:./libs/junit-4.13.jar:./libs/hamcrest-2.2.jar -Dpah.home=${PREYS_AND_HUNTERS_HOME} org.junit.runner.JUnitCore  ${TEST_NAME}
+java -cp .:./libs/junit-4.13.jar:./libs/hamcrest-2.2.jar -Dpah.home=${PREYS_AND_HUNTERS_HOME} -Dtest.data=${TEST_DATA_DIR} org.junit.runner.JUnitCore  ${TEST_NAME}
