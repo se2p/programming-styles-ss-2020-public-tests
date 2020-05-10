@@ -25,9 +25,13 @@ default: compile
 # Compile test classes
 compile: $(TEST_CLASSES:.java=.class) $(CLASSES:.java=.class)
 
-# # This target assumes that the public test project was checkout as submodule under public-tests
+# This target assumes that the public test project was checkout as submodule under public-tests
 test: $(TEST_CLASSES:.java=.class) $(CLASSES:.java=.class)
 	$(JAVA) -cp $(TESTING_CLASSPATH) -Dpah.home=$(PREYS_AND_HUNTERS_HOME) -Dtest.data=${TEST_DATA_DIR} org.junit.runner.PSTestRunner $(TESTS)
+
+# Allows to run a single test following the format TestCase#testMethod
+single-test: $(TEST_CLASSES:.java=.class) $(CLASSES:.java=.class)
+	$(JAVA) -cp $(TESTING_CLASSPATH) -Dpah.home=$(PREYS_AND_HUNTERS_HOME) -Dtest.data=${TEST_DATA_DIR} org.junit.runner.PSTestRunner $(TEST)
 
 clean:
 	$(shell find . -name '*.class' -exec rm {} \;)

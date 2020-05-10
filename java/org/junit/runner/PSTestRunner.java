@@ -1,10 +1,8 @@
 package org.junit.runner;
 
 import java.io.PrintStream;
-import java.text.DateFormat;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.Date;
 
 import org.junit.internal.TextListener;
 import org.junit.runner.notification.Failure;
@@ -41,7 +39,7 @@ public class PSTestRunner {
 
         @Override
         public void testStarted(Description description) {
-            System.out.println("\t - Running test: " + description.getMethodName());
+            System.out.println("\t - Running test: " + description.getClassName() + "." + description.getMethodName());
         }
 
         @Override
@@ -50,23 +48,33 @@ public class PSTestRunner {
         }
     }
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws ClassNotFoundException {
         System.out.println("");
-        System.out.println("Starting test executions: " + dtf.format(LocalDateTime.now()));
+        System.out.println("Starting test executions of PUBLIC TESTS: " + dtf.format(LocalDateTime.now()));
         System.out.println("");
+
         /*
          * This method re-implements JunitCore.main() but replace the hideous default
          * TextListener with out that logs which test starts. To make it possible
          * without too much hassle I declare the same package as in JUnitCore
          */
         JUnitCore junit = new JUnitCore();
-        // Expose
-        JUnitCommandLineParseResult jUnitCommandLineParseResult = JUnitCommandLineParseResult.parse(args);
+
+        Request request = null;
+
+        if (args.length == 1 && args[0].contains("#")) {
+            String className = args[0].split("#")[0];
+            String methodName = args[0].split("#")[1];
+            request = Request.method(Class.forName(className), methodName);
+        } else {
+            JUnitCommandLineParseResult jUnitCommandLineParseResult = JUnitCommandLineParseResult.parse(args);
+            request = jUnitCommandLineParseResult.createRequest(JUnitCore.defaultComputer());
+        }
 
         junit.addListener(new SuppressingOutputTextListener(System.out));
 
-        Result result = junit.run(jUnitCommandLineParseResult.createRequest(JUnitCore.defaultComputer()));
-        
+        Result result = junit.run(request);
+
         System.exit(result.wasSuccessful() ? 0 : 1);
 
     }
