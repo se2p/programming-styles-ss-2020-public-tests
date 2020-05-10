@@ -10,6 +10,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Stream;
 
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
@@ -68,8 +69,9 @@ public class FileTest {
             String fileContent = readFile(file.getAbsolutePath());
 
             if (fileName.endsWith("_input.txt")) {
-                inputs.put(testName, fileContent.split(" "));
-            } else if (fileName.endsWith("_output.txt")) {
+		    inputs.put(testName, Stream.of(fileContent.split(" "))
+				    .map(s -> s.trim()).toArray(String[]::new));
+	    } else if (fileName.endsWith("_output.txt")) {
                 outputs.put(testName, fileContent);
             }
         }
