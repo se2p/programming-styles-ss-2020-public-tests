@@ -66,8 +66,8 @@ describe("File Tests", function () {
       pah.main(testInput);
 
       assert.equal(
-        expectedOutput,
-        stdOutHook.captured(),
+        expectedOutput.trimRight(),
+        stdOutHook.captured().trimRight(),
         "The GUI output for test " + test + " is not as expected."
       );
     });
