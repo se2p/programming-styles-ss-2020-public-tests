@@ -6,7 +6,7 @@ const assert = require('assert');
 const pahHome = process.env.npm_config_pah_home.endsWith('/') ? process.env.npm_config_pah_home  : process.env.npm_config_pah_home + '/'
 const pah = require(pahHome + 'preys-and-hunters')
 
-describe('Basic Test', function() {
+describe('Basic Tests', function() {
     
     describe('runs correct version of node()', function(){
         it('Version of node must be v10.20.1', function() {

@@ -15,6 +15,7 @@ TEST_CLASSES = $(shell find . -iname '*Test.java')
 CLASSES = $(shell find . -iname '*.java' -not -iname '*Test.java')
 
 TESTING_CLASSPATH = .:./libs/junit-4.13.jar:./libs/hamcrest-2.2.jar
+TEST_DATA_DIR = ../test_data
 
 .java.class:
 	$(JC) -cp $(TESTING_CLASSPATH) $*.java
@@ -26,7 +27,7 @@ compile: $(TEST_CLASSES:.java=.class) $(CLASSES:.java=.class)
 
 # # This target assumes that the public test project was checkout as submodule under public-tests
 test: $(TEST_CLASSES:.java=.class) $(CLASSES:.java=.class)
-	$(JAVA) -cp $(TESTING_CLASSPATH) -Dpah.home=$(PREYS_AND_HUNTERS_HOME) org.junit.runner.PSTestRunner $(TESTS)
+	$(JAVA) -cp $(TESTING_CLASSPATH) -Dpah.home=$(PREYS_AND_HUNTERS_HOME) -Dtest.data=${TEST_DATA_DIR} org.junit.runner.PSTestRunner $(TESTS)
 
 clean:
 	$(shell find . -name '*.class' -exec rm {} \;)
