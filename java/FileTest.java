@@ -95,7 +95,7 @@ public class FileTest {
         }catch (IOException e) {
             e.printStackTrace();
         }
-        return String.join("\n", lines) + "\n";
+        return String.join(System.lineSeparator(), lines) + System.lineSeparator();
     }
 
     @BeforeClass
