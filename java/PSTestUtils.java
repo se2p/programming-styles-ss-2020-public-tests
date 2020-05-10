@@ -22,6 +22,7 @@ public class PSTestUtils {
 
     public final static String PREYS_AND_HUNTERS_HOME = "pah.home";
     public final static String JAVA = "pah.java";
+    public final static String ENCODING = "\"-Dfile.encoding=UTF-8\"";
 
     /**
      * Check whether the requires system properties are correctly set. Not that if
@@ -69,6 +70,7 @@ public class PSTestUtils {
         List<String> _args = new ArrayList<String>();
         _args.add(getJava());
         // In order to correctly invoke PreyAndHunters we need to set its class path
+        _args.add(ENCODING);
         _args.add("-cp");
         _args.add(getPreysAndHunter());
         _args.add(PREYS_AND_HUNTERS_CLASS_NAME);
@@ -80,7 +82,7 @@ public class PSTestUtils {
 
         Process process = pb.start();
 
-        BufferedReader reader = new BufferedReader(new InputStreamReader(process.getInputStream()));
+        BufferedReader reader = new BufferedReader(new InputStreamReader(process.getInputStream(), "UTF-8"));
         StringBuilder builder = new StringBuilder();
         String line = null;
         while ((line = reader.readLine()) != null) {
@@ -106,6 +108,7 @@ public class PSTestUtils {
         result.put("stdError", stdError);
 
         return result;
+
     }
 
 }
