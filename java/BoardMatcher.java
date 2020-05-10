@@ -2,6 +2,7 @@ import org.hamcrest.Description;
 import org.hamcrest.Matcher;
 import org.hamcrest.TypeSafeMatcher;
 import java.util.Arrays;
+import java.lang.StringBuilder;
 
 /**
  * Custom hamcrest matcher that checks that two boards are equal.
@@ -21,7 +22,9 @@ public class BoardMatcher extends TypeSafeMatcher<String[]> {
     
     @Override
     protected boolean matchesSafely(String[] s) {
-        if (expectedBoard.length != s.length) {
+        if (s == null) {
+            return false;
+        } else if (expectedBoard.length != s.length) {
             failedBecauseOfMismatchedLineNumbers = true;
             return false;
         } else {
@@ -39,7 +42,29 @@ public class BoardMatcher extends TypeSafeMatcher<String[]> {
         if (failedBecauseOfMismatchedLineNumbers) {
             description.appendText("Board with " + expectedBoard.length + " lines!");
         } else {
-            description.appendText(Arrays.toString(expectedBoard));
+            StringBuilder builder = new StringBuilder();
+            for (int i = 0; i < expectedBoard.length; ++i) {
+                builder.append(System.lineSeparator());
+                builder.append(expectedBoard[i]);
+            }
+            description.appendText(builder.toString());
+        }
+        
+    }
+    
+    @Override
+    public void describeMismatchSafely(String[] actualBoard, Description description) {
+        if (actualBoard == null) {
+            description.appendText("Actual Board is null!");
+        } else if (failedBecauseOfMismatchedLineNumbers) {
+            description.appendText("Board with " + actualBoard.length + " lines!");
+        } else {
+            StringBuilder builder = new StringBuilder("was");
+            for (int i = 0; i < actualBoard.length; ++i) {
+                builder.append(System.lineSeparator());
+                builder.append(actualBoard[i]);
+            }
+            description.appendText(builder.toString());
         }
         
     }
