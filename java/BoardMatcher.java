@@ -15,17 +15,14 @@ public class BoardMatcher extends TypeSafeMatcher<String[]> {
     
     private String[] expectedBoard;
     private boolean[] matchingLines;
-    private int[] differenceIndices;
-    private String[] differenceStrings;
     private int firstDifference;
+    private int firstDifferenceIndex;
     private boolean failedBecauseOfMismatchedLineNumbers = false;
     
     public BoardMatcher(String[] expectedBoard) {
         // Store a clone of the input argument in case it gets modified.
         this.expectedBoard = expectedBoard.clone();
         this.matchingLines = new boolean[expectedBoard.length];
-        this.differenceIndices = new int[expectedBoard.length];
-        this.differenceStrings = new String[expectedBoard.length];
     }
     
     @Override
@@ -40,11 +37,10 @@ public class BoardMatcher extends TypeSafeMatcher<String[]> {
             for (int i = 0; i < expectedBoard.length; ++i) {
                 if (!expectedBoard[i].equals(s[i])) {
                     matchingLines[i] = false;
-                    differenceIndices[i] = StringUtils.indexOfDifference(s[i], expectedBoard[i]);
                     // This will contain the part of the expected board that does not match with the actual board. 
-                    differenceStrings[i] = StringUtils.difference(s[i], expectedBoard[i]);
                     if (!mistakeFound) {
                     	firstDifference = i;
+                    	firstDifferenceIndex = StringUtils.indexOfDifference(s[i], expectedBoard[i]);
                     }
                     mistakeFound = true;
                 } else {
@@ -73,6 +69,7 @@ public class BoardMatcher extends TypeSafeMatcher<String[]> {
             description.appendText("Board with " + actualBoard.length + " lines!");
         } else {
         	appendDescription(description, "was", actualBoard);
+        	appendErrorLocationMessage(description, actualBoard);
         }
         
     }
@@ -83,7 +80,6 @@ public class BoardMatcher extends TypeSafeMatcher<String[]> {
     
     private void appendDescription(Description description, String stringBuilderStart, String[] board) {
     	StringBuilder builder = new StringBuilder(stringBuilderStart);
-
     	int boardSize = 6;
     	int startOfFirstBoard = firstDifference - (firstDifference % boardSize);
     	int endOfFirstBoard = startOfFirstBoard + boardSize;
@@ -94,14 +90,42 @@ public class BoardMatcher extends TypeSafeMatcher<String[]> {
             builder.append(System.lineSeparator());
             builder.append(board[i]);
             if (!matchingLines[i]) {
-                builder.append(" <!>");
-                builder.append(" at: ");
-                builder.append(differenceIndices[i]);
-                builder.append(" difference: \"");
-                builder.append(differenceStrings[i]);
-                builder.append("\"");
+            	if (firstDifference == i) {
+            		builder.append("  <<");	
+            	} else {
+            		builder.append("    ");
+            	}
+                builder.append(" !");
             }
         }
+    	
+    	builder.append(System.lineSeparator());
+    	for (int i = 0; i < firstDifferenceIndex; i++) {
+    		builder.append(" ");
+    	}
+    	builder.append("^");
         description.appendText(builder.toString());
-    }    
+    }
+    
+    private void appendErrorLocationMessage(Description description, String[] actualBoard) {
+    	StringBuilder builder = new StringBuilder();
+    	builder.append(System.lineSeparator());
+    	builder.append("<!> at line ");
+    	builder.append(firstDifference);
+    	builder.append(" expected: ");
+    	appendCharAtDifferingIndex(builder, expectedBoard);
+    	builder.append(" got: ");
+    	appendCharAtDifferingIndex(builder, actualBoard);
+    	description.appendText(builder.toString());
+    }
+    
+    private void appendCharAtDifferingIndex(StringBuilder builder, String[] board) {
+    	if (firstDifferenceIndex >= board[firstDifference].length()) {
+    		builder.append("End of line");
+    	} else {
+    		builder.append("'");
+    		builder.append(board[firstDifference].charAt(firstDifferenceIndex));
+    		builder.append("'");
+    	}
+    }
 }
