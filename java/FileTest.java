@@ -4,7 +4,6 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
@@ -13,8 +12,6 @@ import java.util.Map;
 import java.util.stream.Stream;
 
 import org.hamcrest.MatcherAssert;
-import org.hamcrest.Matchers;
-import org.junit.Assert;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -22,8 +19,8 @@ import org.junit.runners.Parameterized;
 import org.junit.runners.Parameterized.Parameters;
 
 /**
- * Implements unit tests against test files (*_input.txt and corresponding *_output.txt)
- * in the directory specified by the -Dtest.data variable.
+ * Implements unit tests against test files (*_input.txt and corresponding
+ * *_output.txt) in the directory specified by the -Dtest.data variable.
  * 
  * @author Fabian Schliski
  *
@@ -69,17 +66,16 @@ public class FileTest {
             String fileContent = readFile(file.getAbsolutePath());
 
             if (fileName.endsWith("_input.txt")) {
-		    inputs.put(testName, Stream.of(fileContent.split(" "))
-				    .map(s -> s.trim()).toArray(String[]::new));
-	    } else if (fileName.endsWith("_output.txt")) {
+                inputs.put(testName, Stream.of(fileContent.split(" ")).map(s -> s.trim()).toArray(String[]::new));
+            } else if (fileName.endsWith("_output.txt")) {
                 outputs.put(testName, fileContent);
             }
         }
 
         List<Object[]> tests = new ArrayList<>();
 
-        for(Map.Entry entry : inputs.entrySet()) {
-            if(!outputs.containsKey(entry.getKey())) {
+        for (Map.Entry entry : inputs.entrySet()) {
+            if (!outputs.containsKey(entry.getKey())) {
                 throw new NullPointerException("Missing output test file for input test: " + entry.getKey());
             }
             Object[] test = { entry.getKey(), entry.getValue(), outputs.get(entry.getKey()) };
@@ -92,7 +88,7 @@ public class FileTest {
         List<String> lines = Collections.emptyList();
         try {
             lines = Files.readAllLines(Paths.get(fileName), StandardCharsets.UTF_8);
-        }catch (IOException e) {
+        } catch (IOException e) {
             e.printStackTrace();
         }
         return String.join(System.lineSeparator(), lines) + System.lineSeparator();
@@ -121,7 +117,7 @@ public class FileTest {
         // Does the program output match the expected one?
         String[] outputAsLines = stdOut.split("\\R");
         String[] expectedAsLines = this.expectedOutput.split("\\R");
-        MatcherAssert.assertThat("The GUI output for test " + this.testName + " is not as expected.",
-        		outputAsLines, BoardMatcher.matchesBoard(expectedAsLines));
+        MatcherAssert.assertThat("The GUI output for test " + this.testName + " is not as expected.", outputAsLines,
+                BoardMatcher.matchesBoard(expectedAsLines));
     }
 }

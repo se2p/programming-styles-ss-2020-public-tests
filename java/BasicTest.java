@@ -69,7 +69,6 @@ public class BasicTest {
         String stdOut = (String) result.get("stdOut");
 
         // Assertions
-
         String[] lines = stdOut.split("\n");
         Assert.assertEquals("The GUI has the wrong number of lines", expectedLines, lines.length);
     }
@@ -104,7 +103,7 @@ public class BasicTest {
         /*
          * This test should result in the following: 6 lines for the initial board + 6
          * lines for the first input + 6 lines for the second input + 6 lines for the
-         * board and the error message
+         * board and the missing input error message
          */
         int expectedLines = 6 + 6 + 6 + 6;
 
