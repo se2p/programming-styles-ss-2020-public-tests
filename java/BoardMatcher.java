@@ -97,8 +97,9 @@ public class BoardMatcher extends TypeSafeMatcher<String[]> {
                 builder.append(" <!>");
                 builder.append(" at: ");
                 builder.append(differenceIndices[i]);
-                builder.append(" difference: ");
+                builder.append(" difference: \"");
                 builder.append(differenceStrings[i]);
+                builder.append("\"");
             }
         }
         description.appendText(builder.toString());
