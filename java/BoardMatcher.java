@@ -14,7 +14,6 @@ import org.apache.commons.lang3.StringUtils;
 public class BoardMatcher extends TypeSafeMatcher<String[]> {
     
     private String[] expectedBoard;
-    private boolean[] matchingLines;
     private int firstDifference;
     private int firstDifferenceIndex;
     private boolean failedBecauseOfMismatchedLineNumbers = false;
@@ -22,7 +21,6 @@ public class BoardMatcher extends TypeSafeMatcher<String[]> {
     public BoardMatcher(String[] expectedBoard) {
         // Store a clone of the input argument in case it gets modified.
         this.expectedBoard = expectedBoard.clone();
-        this.matchingLines = new boolean[expectedBoard.length];
     }
     
     @Override
@@ -33,21 +31,14 @@ public class BoardMatcher extends TypeSafeMatcher<String[]> {
             failedBecauseOfMismatchedLineNumbers = true;
             return false;
         } else {
-            boolean mistakeFound = false;
             for (int i = 0; i < expectedBoard.length; ++i) {
-                if (!expectedBoard[i].equals(s[i])) {
-                    matchingLines[i] = false;
-                    // This will contain the part of the expected board that does not match with the actual board. 
-                    if (!mistakeFound) {
-                    	firstDifference = i;
-                    	firstDifferenceIndex = StringUtils.indexOfDifference(s[i], expectedBoard[i]);
-                    }
-                    mistakeFound = true;
-                } else {
-                    matchingLines[i] = true;
+                if (!expectedBoard[i].equals(s[i])) { 
+                	firstDifference = i;
+                	firstDifferenceIndex = StringUtils.indexOfDifference(s[i], expectedBoard[i]);
+                    return false;
                 }
             }
-            return !mistakeFound;
+            return true;
         }
     }
  
@@ -89,14 +80,9 @@ public class BoardMatcher extends TypeSafeMatcher<String[]> {
     	// for (int i = 0; i < board.length; ++i) {
             builder.append(System.lineSeparator());
             builder.append(board[i]);
-            if (!matchingLines[i]) {
-            	if (firstDifference == i) {
-            		builder.append("  <<");	
-            	} else {
-            		builder.append("    ");
-            	}
-                builder.append(" !");
-            }
+        	if (firstDifference == i) {
+        		builder.append("  <<");	
+        	}
         }
     	
     	builder.append(System.lineSeparator());
@@ -110,7 +96,7 @@ public class BoardMatcher extends TypeSafeMatcher<String[]> {
     private void appendErrorLocationMessage(Description description, String[] actualBoard) {
     	StringBuilder builder = new StringBuilder();
     	builder.append(System.lineSeparator());
-    	builder.append("<!> at line ");
+    	builder.append("First difference at line ");
     	builder.append(firstDifference);
     	builder.append(" expected: ");
     	appendCharAtDifferingIndex(builder, expectedBoard);
