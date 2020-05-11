@@ -14,7 +14,7 @@ TESTS = $(shell find . -iname '*Test.java' -exec basename {} \; | sed 's|.java||
 TEST_CLASSES = $(shell find . -iname '*Test.java')
 CLASSES = $(shell find . -iname '*.java' -not -iname '*Test.java')
 
-TESTING_CLASSPATH = .:./libs/junit-4.13.jar:./libs/hamcrest-2.2.jar
+TESTING_CLASSPATH = .:./libs/junit-4.13.jar:./libs/hamcrest-2.2.jar:./libs/apache/commons-lang3-3.10.jar
 TEST_DATA_DIR = ../test_data
 
 .java.class:
