@@ -87,9 +87,10 @@ public class BoardMatcher extends TypeSafeMatcher<String[]> {
     	int boardSize = 6;
     	int startOfFirstBoard = firstDifference - (firstDifference % boardSize);
     	int endOfFirstBoard = startOfFirstBoard + boardSize;
+    	// Only print the first board that contains an error.
     	for (int i = startOfFirstBoard; i < endOfFirstBoard; ++i) {
-        // print the whole boards with this for:
-    	//for (int i = 0; i < board.length; ++i) {
+        // To instead print the whole boards with use this for:
+    	// for (int i = 0; i < board.length; ++i) {
             builder.append(System.lineSeparator());
             builder.append(board[i]);
             if (!matchingLines[i]) {
