@@ -3,6 +3,7 @@ import org.hamcrest.Matcher;
 import org.hamcrest.TypeSafeMatcher;
 import java.util.Arrays;
 import java.lang.StringBuilder;
+import org.apache.commons.lang3.StringUtils;
 
 /**
  * Custom hamcrest matcher that checks that two boards are equal.
@@ -13,11 +14,18 @@ import java.lang.StringBuilder;
 public class BoardMatcher extends TypeSafeMatcher<String[]> {
     
     private String[] expectedBoard;
+    private boolean[] matchingLines;
+    private int[] differenceIndices;
+    private String[] differenceStrings;
+    private int firstDifference;
     private boolean failedBecauseOfMismatchedLineNumbers = false;
     
     public BoardMatcher(String[] expectedBoard) {
         // Store a clone of the input argument in case it gets modified.
         this.expectedBoard = expectedBoard.clone();
+        this.matchingLines = new boolean[expectedBoard.length];
+        this.differenceIndices = new int[expectedBoard.length];
+        this.differenceStrings = new String[expectedBoard.length];
     }
     
     @Override
@@ -28,12 +36,22 @@ public class BoardMatcher extends TypeSafeMatcher<String[]> {
             failedBecauseOfMismatchedLineNumbers = true;
             return false;
         } else {
+            boolean mistakeFound = false;
             for (int i = 0; i < expectedBoard.length; ++i) {
                 if (!expectedBoard[i].equals(s[i])) {
-                   return false; 
+                    matchingLines[i] = false;
+                    differenceIndices[i] = StringUtils.indexOfDifference(s[i], expectedBoard[i]);
+                    // This will contain the part of the expected board that does not match with the actual board. 
+                    differenceStrings[i] = StringUtils.difference(s[i], expectedBoard[i]);
+                    if (!mistakeFound) {
+                    	firstDifference = i;
+                    }
+                    mistakeFound = true;
+                } else {
+                    matchingLines[i] = true;
                 }
             }
-            return true;
+            return !mistakeFound;
         }
     }
  
@@ -42,12 +60,7 @@ public class BoardMatcher extends TypeSafeMatcher<String[]> {
         if (failedBecauseOfMismatchedLineNumbers) {
             description.appendText("Board with " + expectedBoard.length + " lines!");
         } else {
-            StringBuilder builder = new StringBuilder();
-            for (int i = 0; i < expectedBoard.length; ++i) {
-                builder.append(System.lineSeparator());
-                builder.append(expectedBoard[i]);
-            }
-            description.appendText(builder.toString());
+        	appendDescription(description, "expected", expectedBoard);
         }
         
     }
@@ -59,12 +72,7 @@ public class BoardMatcher extends TypeSafeMatcher<String[]> {
         } else if (failedBecauseOfMismatchedLineNumbers) {
             description.appendText("Board with " + actualBoard.length + " lines!");
         } else {
-            StringBuilder builder = new StringBuilder("was");
-            for (int i = 0; i < actualBoard.length; ++i) {
-                builder.append(System.lineSeparator());
-                builder.append(actualBoard[i]);
-            }
-            description.appendText(builder.toString());
+        	appendDescription(description, "was", actualBoard);
         }
         
     }
@@ -72,4 +80,26 @@ public class BoardMatcher extends TypeSafeMatcher<String[]> {
     public static Matcher<String[]> matchesBoard(String[] expectedBoard) {
         return new BoardMatcher(expectedBoard);
     }
+    
+    private void appendDescription(Description description, String stringBuilderStart, String[] board) {
+    	StringBuilder builder = new StringBuilder(stringBuilderStart);
+
+    	int boardSize = 6;
+    	int startOfFirstBoard = firstDifference - (firstDifference % boardSize);
+    	int endOfFirstBoard = startOfFirstBoard + boardSize;
+    	for (int i = startOfFirstBoard; i < endOfFirstBoard; ++i) {
+        // print the whole boards with this for:
+    	//for (int i = 0; i < board.length; ++i) {
+            builder.append(System.lineSeparator());
+            builder.append(board[i]);
+            if (!matchingLines[i]) {
+                builder.append(" <!>");
+                builder.append(" at: ");
+                builder.append(differenceIndices[i]);
+                builder.append(" difference: ");
+                builder.append(differenceStrings[i]);
+            }
+        }
+        description.appendText(builder.toString());
+    }    
 }

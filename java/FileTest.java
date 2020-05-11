@@ -96,6 +96,7 @@ public class FileTest {
             e.printStackTrace();
         }
         return String.join(System.lineSeparator(), lines) + System.lineSeparator();
+        // return lines.toArray();
     }
 
     @BeforeClass
@@ -119,6 +120,10 @@ public class FileTest {
         // Assertions
 
         // Does the program output match the expected one?
-        Assert.assertEquals("The GUI output for test " + this.testName + " is not as expected.", this.expectedOutput, stdOut);
+        // Assert.assertEquals("The GUI output for test " + this.testName + " is not as expected.", this.expectedOutput, stdOut);
+        String[] outputAsLines = stdOut.split("\\R");
+        String[] expectedAsLines = this.expectedOutput.split("\\R");
+        MatcherAssert.assertThat("The GUI output for test " + this.testName + " is not as expected.",
+        		outputAsLines, BoardMatcher.matchesBoard(expectedAsLines));
     }
 }
