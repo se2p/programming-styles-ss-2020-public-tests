@@ -54,7 +54,7 @@ public class PSTestUtils {
         final String className = System.getProperty(PREYS_AND_HUNTERS_NAME);
 
         // old behaviour so that we do not break outdated makefiles.
-        if (className == null)
+        if (className == null || className.isEmpty())
             return PREYS_AND_HUNTERS_CLASS_NAME;
 
         return className;
