@@ -1,4 +1,5 @@
 import java.io.File;
+import java.io.FileFilter;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
@@ -56,7 +57,13 @@ public class FileTest {
         // Reading test directory contents
         Map<String, String[]> inputs = new HashMap<>();
         Map<String, String> outputs = new HashMap<>();
-        for (final File file : testDataFolder.listFiles()) {
+        for (final File file : testDataFolder.listFiles(new FileFilter() {
+
+            @Override
+            public boolean accept(File pathname) {
+                return pathname.getAbsolutePath().endsWith(".txt");
+            }
+        })) {
             String fileName = file.getName();
 
             // Removing the _input.txt and _output.txt suffixes to get the test name
