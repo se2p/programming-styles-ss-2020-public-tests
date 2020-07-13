@@ -23,6 +23,7 @@ public class PSTestUtils {
     public final static String PREYS_AND_HUNTERS_CLASS_NAME = "PreysAndHunters";
 
     public final static String PREYS_AND_HUNTERS_HOME = "pah.home";
+    public final static String PREYS_AND_HUNTERS_NAME = "pah.name";
     public final static String JAVA = "pah.java";
 
     private static String OS = System.getProperty("os.name").toLowerCase();
@@ -42,13 +43,27 @@ public class PSTestUtils {
         Assume.assumeNotNull("Java is not set", getJava());
         // See https://www.baeldung.com/hamcrest-file-matchers
         Assume.assumeThat("Cannot find PREYS_AND_HUNTERS_HOME", new File(getPreysAndHunter()), anExistingDirectory());
-        Assume.assumeThat("Cannot find " + PREYS_AND_HUNTERS_CLASS_NAME + ".class",
-                new File(getPreysAndHunter(), PREYS_AND_HUNTERS_CLASS_NAME + ".class"), anExistingFile());
+        Assume.assumeThat("Cannot find " + getPreysAndHunterClassPath() + ".class",
+                new File(getPreysAndHunter(), getPreysAndHunterClassPath() + ".class"), anExistingFile());
         // TODO Check if the java version returned by getJava() is indeed JAVA 11
     }
 
     public static String getPreysAndHunter() {
         return System.getProperty(PREYS_AND_HUNTERS_HOME);
+    }
+
+    public static String getPreysAndHunterClassName() {
+        final String className = System.getProperty(PREYS_AND_HUNTERS_NAME);
+
+        // old behaviour so that we do not break outdated makefiles.
+        if (className == null || className.isEmpty())
+            return PREYS_AND_HUNTERS_CLASS_NAME;
+
+        return className;
+    }
+
+    public static String getPreysAndHunterClassPath() {
+        return getPreysAndHunterClassName().replace('.', '/');
     }
 
     /**
@@ -98,7 +113,7 @@ public class PSTestUtils {
         // In order to correctly invoke PreyAndHunters we need to set its class path
         _args.add("-cp");
         _args.add(getPreysAndHunter());
-        _args.add(PREYS_AND_HUNTERS_CLASS_NAME);
+        _args.add(getPreysAndHunterClassName());
         for (String arg : args) {
             _args.add(arg);
         }
@@ -135,6 +150,7 @@ public class PSTestUtils {
         return result;
 
     }
+
 
     /**
      * Execute the PreyAndHunters version pointed by getPreysAndHunter() with the
