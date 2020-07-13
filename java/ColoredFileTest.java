@@ -157,8 +157,7 @@ public class ColoredFileTest {
         PSTestUtils.validateTheExecutionEnvironment();
     }
 
-    // TODO Replace name !
-    @Test // (timeout = 3000)
+    @Test(timeout = 3000)
     public void testInputOutputFile() throws Exception {
         try {
             // Execution. Note that PreysAndHunters.ENABLE_COLORS is not visible here with
