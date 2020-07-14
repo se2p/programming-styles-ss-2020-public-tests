@@ -65,6 +65,9 @@ public class FileTest {
             }
         })) {
             String fileName = file.getName();
+            if (fileName.contains("fixed")) {
+            	continue;
+            }
 
             // Removing the _input.txt and _output.txt suffixes to get the test name
             String testName = fileName.replace("_input.txt", "").replace("_output.txt", "");
