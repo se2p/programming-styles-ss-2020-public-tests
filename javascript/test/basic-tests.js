@@ -14,6 +14,8 @@ const pah = require(pahHome + "preys-and-hunters");
 
 const configFile = path.join(pahHome, "config.ini")
 
+const pah_inputs = ["1", "2", "3"]
+
 describe('Basic Tests', function() {
     
     describe('runs correct version of node', function(){
@@ -41,7 +43,7 @@ describe('Basic Tests', function() {
         });
 
         it('Preys and Hunters should raise an exception if config.ini is missing', function() {
-            var pah_inputs = [1, 2, 3]
+            
             try {
                 pah.main(pah_inputs)
                 assert.fail("No error was raised")
@@ -56,7 +58,6 @@ describe('Basic Tests', function() {
             // Make sure there's an empty config.ini file (see https://flaviocopes.com/how-to-create-empty-file-node/)
             fs.closeSync(fs.openSync(configFile, 'w'))
 
-            var pah_inputs = [1, 2, 3]
             try {
                 pah.main(pah_inputs)
                 assert.fail("No error was raised")
@@ -71,7 +72,6 @@ describe('Basic Tests', function() {
             // Make sure that config file exists but does not contain the required option
             fs.writeFileSync(configFile, `;pluginName=default\n\npluginId=fixed`)
 
-            var pah_inputs = [1, 2, 3]
             try {
                 pah.main(pah_inputs)
                 assert.fail("No error was raised")
@@ -86,7 +86,6 @@ describe('Basic Tests', function() {
             // Make sure there's the required config in the file but the wrong value
             fs.writeFileSync(configFile, 'pluginName=foobar')
 
-            var pah_inputs = [1, 2, 3]
             try {
                 pah.main(pah_inputs)
                 assert.fail("No error was raised")
@@ -117,7 +116,6 @@ describe('Basic Tests', function() {
             // Make sure that a valid config file exists
             fs.writeFileSync(configFile, `pluginName=default`)
 
-            var pah_inputs = [1, 2, 3]
             pah.main(pah_inputs)
         });
     });
