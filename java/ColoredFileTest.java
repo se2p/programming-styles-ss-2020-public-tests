@@ -94,6 +94,9 @@ public class ColoredFileTest {
             }
         })) {
             String fileName = file.getName();
+            if (fileName.contains("fixed")) {
+            	continue;
+            }
 
             // Removing the suffixes to get the test name
             String testName = fileName.replace("_input.txt", "").replace("_output.txt", "")
