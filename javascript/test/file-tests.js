@@ -9,6 +9,9 @@ const pahHome = process.env.npm_config_pah_home.endsWith("/")
   : process.env.npm_config_pah_home + "/";
 const pah = require(pahHome + "preys-and-hunters");
 
+// This points to the confiig file in the correct location
+const configFile = path.join(pahHome, "config.ini")
+
 // Constants for board matching
 const linesPerBoard = 6
 
@@ -93,11 +96,11 @@ describe("File Tests", function () {
 });
 
 function copyConfiguration(testName) {
-  // Create a local config.ini file. This works since the working directory for the preys and hunters is also the current directory.
+  // Replace the config file in the project folder to ensure the file is in the correct location
   if (testName.includes('fixed')) {
-    fs.copyFileSync('./config_fixed.ini', './config.ini')
+    fs.copyFileSync('./config_fixed.ini', configFile)
   } else {
-    fs.copyFileSync('./config_default.ini', './config.ini')
+    fs.copyFileSync('./config_default.ini', configFile)
   }
 
 }
