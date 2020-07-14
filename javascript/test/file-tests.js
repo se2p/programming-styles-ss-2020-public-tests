@@ -4,11 +4,13 @@ const fs = require("fs");
 const path = require("path");
 
 // Find your module using the --pah_home variable and the default name 'preys-and-hunters'
-
 const pahHome = process.env.npm_config_pah_home.endsWith("/")
   ? process.env.npm_config_pah_home
   : process.env.npm_config_pah_home + "/";
 const pah = require(pahHome + "preys-and-hunters");
+
+// Constants for board matching
+const linesPerBoard = 6
 
 describe("File Tests", function () {
   // Capturing stdout (for later)
@@ -62,17 +64,72 @@ describe("File Tests", function () {
     const testInput = inputs[test];
     const expectedOutput = outputs[test];
 
+    // set configuration:
     it("should produce the expected output (" + test + ")", () => {
+      copyConfiguration(test)
       pah.main(testInput);
 
-      assert.equal(
-        expectedOutput.trimRight(),
-        stdOutHook.captured().trimRight(),
-        "The GUI output for test " + test + " is not as expected."
-      );
+      expectedLines = expectedOutput.trimRight().split(/\r?\n/)
+      actualLines = stdOutHook.captured().trimRight().split(/\r?\n/)
+
+      assert.equal(expectedLines.length, actualLines.length, "Expected " + expectedLines.length +  " lines but got " + actualLines.length + " in the GUI output for test " + test + ".")
+      
+      numberOfBoards = expectedLines.length / linesPerBoard
+
+      for (var i = 0; i < numberOfBoards; i++) {
+        for (var j = 0; j < linesPerBoard; j++) {
+          var currentExpectedLine = expectedLines[i * linesPerBoard + j]
+          var currentActualLine = actualLines[i * linesPerBoard + j]
+          // Check for equality, catch the assertion error and re-throw a pretty printed error.
+          try {
+            assert.equal(currentExpectedLine, currentActualLine)
+          } catch(error) {
+            prettyPrintBoardError(i, j, expectedLines, actualLines, error)
+          }
+        }
+      }
     });
   }
 });
+
+function copyConfiguration(testName) {
+  // Create a local config.ini file. This works since the working directory for the preys and hunters is also the current directory.
+  if (testName.includes('fixed')) {
+    fs.copyFileSync('./config_fixed.ini', './config.ini')
+  } else {
+    fs.copyFileSync('./config_default.ini', './config.ini')
+  }
+
+}
+
+function prettyPrintBoardError(i, j, expectedLines, actualLines, oldError) {
+  var firstDiffPos = 0;
+  var currentExpectedLine = expectedLines[i * linesPerBoard + j]
+          var currentActualLine = actualLines[i * linesPerBoard + j]
+  while (currentExpectedLine[firstDiffPos] === currentActualLine[firstDiffPos]) firstDiffPos++;
+
+  var expectedChar, actualChar
+  expectedChar = (firstDiffPos < currentExpectedLine.length) ? currentExpectedLine[firstDiffPos] : "<end of line>" 
+  actualChar = (firstDiffPos < currentActualLine.length) ? currentActualLine[firstDiffPos] : "<end of line>" 
+  
+  expectedLines[i * linesPerBoard + j] += "<"
+  expectedLines.splice(i * linesPerBoard + linesPerBoard, 0, "^".padStart(firstDiffPos + 1,"-"))
+  actualLines[i * linesPerBoard + j] += "<"
+  actualLines.splice(i * linesPerBoard + linesPerBoard, 0, "^".padStart(firstDiffPos + 1,"-"))
+  var contextArray = ["The expected and actual board differ for board number " + i, "Expected board:", "...", "Actual board: ", "...", "expected versus actual"]
+  contextArray.splice(2, 1, expectedLines.slice(i * linesPerBoard, (i + 1) * linesPerBoard + 1).join("\n"))
+  contextArray.splice(4, 1, actualLines.slice(i * linesPerBoard, (i + 1) * linesPerBoard + 1).join("\n"))
+  contextArray.splice(5, 1, "expected char: '" + expectedChar + "' but actual char was: '" + actualChar + "'")
+
+  var reformattedError = new assert.AssertionError({
+    message: contextArray.join("\n"),
+    actual: oldError.actual,
+    expected: oldError.expected,
+    operator: oldError.operator,
+    stackStartFn: it
+  })
+  throw reformattedError
+}
 
 // Taken (and modified) from: https://stackoverflow.com/questions/18543047/mocha-monitor-application-output
 function captureStream(stream) {
