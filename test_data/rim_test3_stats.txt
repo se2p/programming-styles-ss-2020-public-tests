@@ -1,0 +1,4 @@
+>>>>>
+TotalInputs=20,ValidMoves=16,InvalidMoves=3
+1=11,2=5,3=0,4=0,5=0,6=11,
+2=DEAD,3=DEAD,4=DEAD,5=DEAD,

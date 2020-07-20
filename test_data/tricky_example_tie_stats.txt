@@ -1,0 +1,4 @@
+>>>>>
+TotalInputs=27,ValidMoves=27,InvalidMoves=0
+1=10,2=6,3=6,4=1,5=4,6=10,
+2=SAFE,3=SAFE,4=DEAD,5=DEAD,
