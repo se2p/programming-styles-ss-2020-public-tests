@@ -18,6 +18,8 @@ import org.junit.Test;
  * @author gambi
  *
  */
+// No category means we always run this tests, otherwise we can explicitly say this by adding the following
+//@Category({ Assignment1.class, Assignment2.class, Assignment3.class, Assignment4.class })
 public class BasicTest {
 
     @BeforeClass

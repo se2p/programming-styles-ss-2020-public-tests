@@ -16,7 +16,9 @@ import java.util.stream.Stream;
 import org.apache.commons.lang3.tuple.Triple;
 import org.hamcrest.MatcherAssert;
 import org.junit.BeforeClass;
+import org.junit.Ignore;
 import org.junit.Test;
+import org.junit.experimental.categories.Category;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 import org.junit.runners.Parameterized.Parameters;
@@ -45,6 +47,7 @@ import org.junit.runners.Parameterized.Parameters;
  * @author gambi
  *
  */
+@Category({ Assignment3.class })
 @RunWith(Parameterized.class)
 public class ColoredFileTest {
 
@@ -95,7 +98,7 @@ public class ColoredFileTest {
         })) {
             String fileName = file.getName();
             if (fileName.contains("fixed")) {
-            	continue;
+                continue;
             }
 
             // Removing the suffixes to get the test name

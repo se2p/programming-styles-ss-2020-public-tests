@@ -20,6 +20,7 @@ import org.hamcrest.collection.ArrayMatching;
 import org.junit.Assert;
 import org.junit.BeforeClass;
 import org.junit.Test;
+import org.junit.experimental.categories.Category;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 import org.junit.runners.Parameterized.Parameters;
@@ -34,6 +35,7 @@ import aspects.TestGameStats;
  * @author gambi
  *
  */
+@Category({ Assignment3.class })
 @RunWith(Parameterized.class)
 public class CombinedAspectFileTest {
 
