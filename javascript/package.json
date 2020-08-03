@@ -1,5 +1,5 @@
 {
   "scripts": {
-    "test": "mocha --no-color"
+    "test": "mocha --experimental-worker --no-color"
   }
 }
