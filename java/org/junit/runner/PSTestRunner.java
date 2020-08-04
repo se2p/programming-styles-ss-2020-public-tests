@@ -58,8 +58,16 @@ public class PSTestRunner {
     public final static String INCLUDE_CATEGORY = "pah.assignment";
 
     public static void main(String[] args) throws ClassNotFoundException {
+
+        String categoryName = System.getProperties().getProperty(INCLUDE_CATEGORY);
+
         System.out.println("");
-        System.out.println("Starting test executions of PUBLIC TESTS: " + dtf.format(LocalDateTime.now()));
+        System.out.print("Starting test executions of PUBLIC TESTS: " + dtf.format(LocalDateTime.now()));
+        if (categoryName != null && categoryName.trim().length() > 0) {
+            System.out.println(" for " + categoryName);
+        } else {
+            System.out.println("");
+        }
         System.out.println("");
 
         /*
@@ -82,13 +90,11 @@ public class PSTestRunner {
             request = jUnitCommandLineParseResult.createRequest(JUnitCore.defaultComputer());
         }
 
-        // If a testClass is annotated with Category, then annotation must match !
-//        Annotation categoryAnnotation = testClass.getAnnotation( Category.class);
-//        categoryAnnotation.get
+        // If a testClass is annotated with Category, then annotation must match. If
+        // there's no annotation, we keep the test no matter what.
 
-        if (System.getProperties().contains(INCLUDE_CATEGORY)) {
+        if (categoryName != null && categoryName.trim().length() > 0) {
             final Class categoryClass;
-            String categoryName = System.getProperties().getProperty(INCLUDE_CATEGORY);
 
             // TODO At the moment I cannot find anything better.
             try {
