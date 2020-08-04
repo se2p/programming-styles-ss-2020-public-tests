@@ -31,7 +31,7 @@ test: $(TEST_CLASSES:.java=.class) $(CLASSES:.java=.class)
 
 # Allows to run a single test following the format TestCase#testMethod
 single-test: $(TEST_CLASSES:.java=.class) $(CLASSES:.java=.class)
-	$(JAVA) -cp $(TESTING_CLASSPATH) -Dpah.home=$(PREYS_AND_HUNTERS_HOME) -Dpah.name=${PREYS_AND_HUNTERS_NAME} -Dtest.data=${TEST_DATA_DIR} org.junit.runner.PSTestRunner $(TEST)
+	$(JAVA) -cp $(TESTING_CLASSPATH) -Dpah.assignment=$(ASSIGNMENT) -Dpah.home=$(PREYS_AND_HUNTERS_HOME) -Dpah.name=${PREYS_AND_HUNTERS_NAME} -Dtest.data=${TEST_DATA_DIR} org.junit.runner.PSTestRunner $(TEST)
 
 clean:
 	$(shell find . -name '*.class' -exec rm {} \;)
