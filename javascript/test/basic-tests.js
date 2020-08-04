@@ -18,7 +18,7 @@ const pah_inputs = ["1", "2", "3"]
 
 describe('Basic Tests', function() {
     
-    describe('runs correct version of node', function(){
+    describe('runs correct version of node. Tag: Assignment1, Assignment2, Assignment3, Assignment4', function(){
         it('Version of node must be v10.20.1', function() {
             assert.equal(process.version, 'v10.20.1');
         });
@@ -26,9 +26,9 @@ describe('Basic Tests', function() {
 
     // https://stackoverflow.com/questions/21587122/mocha-chai-expect-to-throw-not-catching-thrown-errors
     // assert.throws( FunctionThatShouldThrow_AssertionError, assert.AssertionError )
-    describe('runs with exceptions', function() {
+    describe('runs with exceptions. Tag: Assignment3', function() {
 
-        beforeEach("Ensure no config.init before execution", function(){
+        beforeEach("Ensure no config.init before execution.", function(){
             // Make sure the config.ini file is not there
             if( fs.existsSync(configFile)){
                 fs.unlinkSync(configFile);
@@ -97,7 +97,7 @@ describe('Basic Tests', function() {
         });
     });
 
-    describe('runs without exceptions()', function() {
+    describe('runs without exceptions.  Tag: Assignment3', function() {
         beforeEach("Ensure no config.init before execution", function(){
             // Make sure the config.ini file is not there
             if( fs.existsSync(configFile)){

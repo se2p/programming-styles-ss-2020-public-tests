@@ -15,7 +15,7 @@ const configFile = path.join(pahHome, "config.ini")
 // Constants for board matching
 const linesPerBoard = 6
 
-describe("File Tests", function () {
+describe("Common File Tests. Tag: Assignment1, Assignment2, Assignment3, Assignment4", function () {
   // Capturing stdout (for later)
   let stdOutHook;
 
@@ -45,6 +45,98 @@ describe("File Tests", function () {
   const outputs = {};
   const filesInDir = fs.readdirSync(fullPath);
   for (let fileName of filesInDir) {
+
+    if( fileName.includes("_fixed_") ){
+      // Here we care only about the files that correspond to the common output
+      continue;
+    }
+
+    const testName = fileName
+      .replace("_input.txt", "")
+      .replace("_output.txt", "");
+    const fileContent = fs
+      .readFileSync(path.join(fullPath, fileName))
+      .toString();
+
+    if (fileName.endsWith("_input.txt")) {
+      inputs[testName] = fileContent.split(" ");
+    } else if (fileName.endsWith("_output.txt")) {
+      outputs[testName] = fileContent;
+    }
+  }
+
+  for (let test of Object.keys(inputs)) {
+    if (!outputs.hasOwnProperty(test)) {
+      throw new Error("No output file for input test: " + test);
+    }
+
+    const testInput = inputs[test];
+    const expectedOutput = outputs[test];
+
+    // set configuration:
+    it("should produce the expected output (" + test + ")", () => {
+      copyConfiguration(test)
+      pah.main(testInput);
+
+      expectedLines = expectedOutput.trimRight().split(/\r?\n/)
+      actualLines = stdOutHook.captured().trimRight().split(/\r?\n/)
+
+      assert.equal(expectedLines.length, actualLines.length, "Expected " + expectedLines.length +  " lines but got " + actualLines.length + " in the GUI output for test " + test + ".")
+      
+      numberOfBoards = expectedLines.length / linesPerBoard
+
+      for (var i = 0; i < numberOfBoards; i++) {
+        for (var j = 0; j < linesPerBoard; j++) {
+          var currentExpectedLine = expectedLines[i * linesPerBoard + j]
+          var currentActualLine = actualLines[i * linesPerBoard + j]
+          // Check for equality, catch the assertion error and re-throw a pretty printed error.
+          try {
+            assert.equal(currentExpectedLine, currentActualLine)
+          } catch(error) {
+            prettyPrintBoardError(i, j, expectedLines, actualLines, error)
+          }
+        }
+      }
+    });
+  }
+});
+
+describe("File Tests With Plugins. Tag: Assignment3", function () {
+  // Capturing stdout (for later)
+  let stdOutHook;
+
+  beforeEach(() => {
+    stdOutHook = captureStream(process.stdout);
+  });
+
+  afterEach(() => {
+    stdOutHook.unhook();
+  });
+
+  // Setup and read tests
+  const testDir = process.env.npm_config_test_data;
+  if (!testDir || testDir === "") {
+    throw new Error("Runtime variable test_data is not test");
+  }
+
+  const fullPath = path.join(process.cwd(), testDir);
+  const testDataFolder = fs.lstatSync(fullPath);
+  if (!testDataFolder.isDirectory()) {
+    throw new Error(
+      "Test data folder (" + __dirname + testDataFolder + ") is not a folder."
+    );
+  }
+
+  const inputs = {};
+  const outputs = {};
+  const filesInDir = fs.readdirSync(fullPath);
+  for (let fileName of filesInDir) {
+
+    if( ! fileName.includes("_fixed_") ){
+      // Here we care only about the files for the fixed plugin.
+      continue;
+    }
+
     const testName = fileName
       .replace("_input.txt", "")
       .replace("_output.txt", "");

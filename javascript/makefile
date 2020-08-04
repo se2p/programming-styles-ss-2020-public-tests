@@ -10,5 +10,6 @@ default: test
 	npm install mocha
 
 # Tests can be run only if mocha is available
+# https://github.com/strongloop/loopback-next/issues/2755
 test: ./node_modules/.bin/mocha
-	npm --pah_home=$(PREYS_AND_HUNTERS_HOME) --test_data=${TEST_DATA_DIR} test
+	npm --pah_home=$(PREYS_AND_HUNTERS_HOME) --test_data=${TEST_DATA_DIR} test -- --grep=$(ASSIGNMENT)
