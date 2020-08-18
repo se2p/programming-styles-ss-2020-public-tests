@@ -74,9 +74,13 @@ describe("Common File Tests. Tag: Assignment1, Assignment2, Assignment3, Assignm
     const expectedOutput = outputs[test];
 
     // set configuration:
-    it("should produce the expected output (" + test + ")", () => {
+    it("should produce the expected output (" + test + ")", async () => {
       copyConfiguration(test)
-      pah.main(testInput);
+
+      if (pah.main.constructor.name === "AsyncFunction")
+          await pah.main(testInput);
+      else
+          pah.main(testInput);
 
       expectedLines = expectedOutput.trimRight().split(/\r?\n/)
       actualLines = stdOutHook.captured().trimRight().split(/\r?\n/)
@@ -160,9 +164,13 @@ describe("File Tests With Plugins. Tag: Assignment3", function () {
     const expectedOutput = outputs[test];
 
     // set configuration:
-    it("should produce the expected output (" + test + ")", () => {
+    it("should produce the expected output (" + test + ")", async () => {
       copyConfiguration(test)
-      pah.main(testInput);
+
+      if (pah.main.constructor.name === "AsyncFunction")
+          await pah.main(testInput);
+      else
+          pah.main(testInput);
 
       expectedLines = expectedOutput.trimRight().split(/\r?\n/)
       actualLines = stdOutHook.captured().trimRight().split(/\r?\n/)
