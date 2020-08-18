@@ -1,5 +1,8 @@
 {
   "scripts": {
     "test": "mocha --experimental-worker --no-color"
+  },
+  "dependencies": {
+    "mocha": "^8.1.1"
   }
 }
